@@ -4,5 +4,5 @@ Clean the desktop or organise all the files of desktop in separate folder as per
 
 
 
-***********Please Find attachment for details.*************
+***********Please Find attachment(Infrastructure.doc) for details.*************
 Thank you
