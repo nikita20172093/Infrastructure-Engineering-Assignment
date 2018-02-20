@@ -156,7 +156,6 @@ void listDir(string directory, string rootPath)
         int status;
         if (mymap[it.first].size() > 0)
         {
-            cout<<dirName<<"\n";
             if (it.first != "other")
                 undoMap.insert(make_pair(dirName, directory));
             status = mkdir(dirName.c_str(), S_IRWXU | S_IRWXG | S_IROTH | S_IXOTH);
@@ -183,7 +182,7 @@ void listDir(string directory, string rootPath)
                 syntax.clear();
             }
             if (mymap[it.first].size() > 0)
-                cout << "All the images are in now " << dirNameMapping["image"]
+                cout << "All the images are in now -->" << dirNameMapping["image"]
                      << " folder\n";
         }
         if (it.first == "pdf")
@@ -218,7 +217,7 @@ void listDir(string directory, string rootPath)
                 system(syntax.c_str());
             }
             if (mymap[it.first].size() > 0)
-                cout << "All the videos are in now " << dirNameMapping["video"]
+                cout << "All the videos are in now -> " << dirNameMapping["video"]
                      << " folder\n";
         }
         if (it.first == "doc")
@@ -236,7 +235,7 @@ void listDir(string directory, string rootPath)
                 system(syntax.c_str());
             }
             if (mymap[it.first].size() > 0)
-                cout << "All the documents are in now " << dirNameMapping["doc"]
+                cout << "All the documents are in now -->" << dirNameMapping["doc"]
                      << " folder\n";
         }
         if (it.first == "prog")
@@ -254,7 +253,7 @@ void listDir(string directory, string rootPath)
                 system(syntax.c_str());
             }
             if (mymap[it.first].size() > 0)
-                cout << "All the program files are in now " << dirNameMapping["prog"]
+                cout << "All the program files are in now -->" << dirNameMapping["prog"]
                      << " folder\n";
         }
         if (it.first == "other")
@@ -306,7 +305,7 @@ void listDir(string directory, string rootPath)
                 }
             }
             if (mymap[it.first].size() > 0)
-                cout << "All the miscellaneous files are in now " << dirNameMapping["other"]
+                cout << "All the miscellaneous files are in now -->" << dirNameMapping["other"]
                      << " folder\n";
         }
     }
