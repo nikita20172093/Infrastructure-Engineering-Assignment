@@ -51,19 +51,20 @@ string getKey(string mimeType)
 
 ///////* listDir()
 // this function takes root as input and keep file in appropriate folder
-void listDir(string directory, string uniqFileName)
+void listDir(string directory, string rootPath)
 {
     DIR* dp;
+    if(directory[directory.length()-1]!='/')
+        directory=directory+"/";
     struct dirent* dirp;
-    string dir = directory + "/Desktop/";
-    if ((dp = opendir(dir.c_str())) == NULL)
+    string dir = rootPath+"Documents/";
+    if ((dp = opendir(directory.c_str())) == NULL)
     {
         // cout << "Error(" << errno << ") opening " << dir << endl;
         return;
     }
 
     vector<string> fileType, fileMap;
-
 
     ////////////mazor folder types that i assumed to take into consideration
     mymap.insert(make_pair("pdf", fileType));
@@ -90,20 +91,20 @@ void listDir(string directory, string uniqFileName)
         string name(dirp->d_name);
         if (name != "." && name != "..")
         {
-            string test = dir + name + "\n";
+            string test = directory + name;
             if (dirp->d_type == DT_DIR)
             {
                 /// ignored all the folder that are present in desktop as they may be present
                 // there for a specific purpose(assumption)
-                string folder = dir + name; /// if folder needs to be moved***code here
+                string folder = directory + name; /// if folder needs to be moved***code here
             }
             else
             {
                 int indexOfDot = test.find_last_of(".");
                 string mimeType = test.substr(indexOfDot + 1);
-                mimeType = mimeType.substr(0, mimeType.length() - 1);
+                mimeType = mimeType.substr(0, mimeType.length());
                 string key = getKey(mimeType);
-                test = test.substr(0, test.length() - 1);
+                test = test.substr(0, test.length());
                 mymap[key].push_back(test);
             }
         }
@@ -134,12 +135,14 @@ void listDir(string directory, string uniqFileName)
             else
             {
                 dirNameMapping.insert(make_pair(fileMap[index], fName));
-
                 flag = 1;
                 break;
             }
         }
     }
+
+
+
 
     ////////////////////////
 
@@ -149,12 +152,13 @@ void listDir(string directory, string uniqFileName)
     // get created
     for (auto& it : dirNameMapping)
     {
-        string dirName = directory + "/Documents/" + it.second;
+        string dirName = rootPath + "Documents/" + it.second;
         int status;
         if (mymap[it.first].size() > 0)
         {
+            cout<<dirName<<"\n";
             if (it.first != "other")
-                undoMap.insert(make_pair(dirName, dir));
+                undoMap.insert(make_pair(dirName, directory));
             status = mkdir(dirName.c_str(), S_IRWXU | S_IRWXG | S_IROTH | S_IXOTH);
         }
         dirName.clear();
@@ -171,15 +175,15 @@ void listDir(string directory, string uniqFileName)
                 string source = "\"" + img[index] + "\"";
                 int indexOfSlash = source.find_last_of("/");
                 string fileNm = source.substr(indexOfSlash);
-                fileNm = fileNm.substr(0, fileNm.length() - 1);
+                fileNm = fileNm.substr(0, fileNm.length()-1);
                 string dest
-                    = "\"" + directory + "/Documents/" + dirNameMapping[it.first] + fileNm + "\"";
+                    = "\"" + rootPath + "Documents/" + dirNameMapping[it.first] + fileNm + "\"";
                 string syntax = "mv " + source + " " + dest;
                 system(syntax.c_str());
                 syntax.clear();
             }
             if (mymap[it.first].size() > 0)
-                cout << "All the desktop images are in now " << dirNameMapping["image"]
+                cout << "All the images are in now " << dirNameMapping["image"]
                      << " folder\n";
         }
         if (it.first == "pdf")
@@ -190,14 +194,14 @@ void listDir(string directory, string uniqFileName)
                 string source = "\"" + img[index] + "\"";
                 int indexOfSlash = source.find_last_of("/");
                 string fileNm = source.substr(indexOfSlash);
-                fileNm = fileNm.substr(0, fileNm.length() - 1);
+                fileNm = fileNm.substr(0, fileNm.length()-1);
                 string dest
-                    = "\"" + directory + "/Documents/" + dirNameMapping[it.first] + fileNm + "\"";
+                    = "\"" + rootPath + "Documents/" + dirNameMapping[it.first] + fileNm + "\"";
                 string syntax = "mv " + source + " " + dest;
                 system(syntax.c_str());
             }
             if (mymap[it.first].size() > 0)
-                cout << "All the desktop PDFs are in now " << dirNameMapping["pdf"] << " folder\n";
+                cout << "All the PDFs are in now " << dirNameMapping["pdf"] << " folder\n";
         }
         if (it.first == "video")
         {
@@ -207,14 +211,14 @@ void listDir(string directory, string uniqFileName)
                 string source = "\"" + img[index] + "\"";
                 int indexOfSlash = source.find_last_of("/");
                 string fileNm = source.substr(indexOfSlash);
-                fileNm = fileNm.substr(0, fileNm.length() - 1);
+                fileNm = fileNm.substr(0, fileNm.length()-1);
                 string dest
-                    = "\"" + directory + "/Documents/" + dirNameMapping[it.first] + fileNm + "\"";
+                    = "\"" + rootPath + "Documents/" + dirNameMapping[it.first] + fileNm + "\"";
                 string syntax = "mv " + source + " " + dest;
                 system(syntax.c_str());
             }
             if (mymap[it.first].size() > 0)
-                cout << "All the desktop videos are in now " << dirNameMapping["video"]
+                cout << "All the videos are in now " << dirNameMapping["video"]
                      << " folder\n";
         }
         if (it.first == "doc")
@@ -225,14 +229,14 @@ void listDir(string directory, string uniqFileName)
                 string source = "\"" + img[index] + "\"";
                 int indexOfSlash = source.find_last_of("/");
                 string fileNm = source.substr(indexOfSlash);
-                fileNm = fileNm.substr(0, fileNm.length() - 1);
+                fileNm = fileNm.substr(0, fileNm.length()-1);
                 string dest
-                    = "\"" + directory + "/Documents/" + dirNameMapping[it.first] + fileNm + "\"";
+                    = "\"" + rootPath + "Documents/" + dirNameMapping[it.first] + fileNm + "\"";
                 string syntax = "mv " + source + " " + dest;
                 system(syntax.c_str());
             }
             if (mymap[it.first].size() > 0)
-                cout << "All the desktop documents are in now " << dirNameMapping["doc"]
+                cout << "All the documents are in now " << dirNameMapping["doc"]
                      << " folder\n";
         }
         if (it.first == "prog")
@@ -243,14 +247,14 @@ void listDir(string directory, string uniqFileName)
                 string source = "\"" + img[index] + "\"";
                 int indexOfSlash = source.find_last_of("/");
                 string fileNm = source.substr(indexOfSlash);
-                fileNm = fileNm.substr(0, fileNm.length() - 1);
+                fileNm = fileNm.substr(0, fileNm.length()-1);
                 string dest
-                    = "\"" + directory + "/Documents/" + dirNameMapping[it.first] + fileNm + "\"";
+                    = "\"" + rootPath + "Documents/" + dirNameMapping[it.first] + fileNm + "\"";
                 string syntax = "mv " + source + " " + dest;
                 system(syntax.c_str());
             }
             if (mymap[it.first].size() > 0)
-                cout << "All the desktop program files are in now " << dirNameMapping["prog"]
+                cout << "All the program files are in now " << dirNameMapping["prog"]
                      << " folder\n";
         }
         if (it.first == "other")
@@ -262,7 +266,7 @@ void listDir(string directory, string uniqFileName)
                 ///////////////////////////////////
                 int indexOfSlash = source.find_last_of("/");
                 string fileNm = source.substr(indexOfSlash);
-                fileNm = fileNm.substr(0, fileNm.length() - 1);
+                fileNm = fileNm.substr(0, fileNm.length()-1);
                 int indexOfDot = source.find_last_of(".");
                 string newFolder;
                 int flag = 0;
@@ -273,7 +277,7 @@ void listDir(string directory, string uniqFileName)
                 if (flag == 0)
                 {
                     string dest
-                        = directory + "/Documents/" + dirNameMapping[it.first] + "/" + newFolder;
+                        = rootPath + "Documents/" + dirNameMapping[it.first] + "/" + newFolder;
                     struct stat sb;
                     if (stat(dest.c_str(), &sb) == 0 && S_ISDIR(sb.st_mode))
                     {
@@ -283,7 +287,7 @@ void listDir(string directory, string uniqFileName)
                     {
                         int status;
                         status = mkdir(dest.c_str(), S_IRWXU | S_IRWXG | S_IROTH | S_IXOTH);
-                        undoMap.insert(make_pair(dest, dir));
+                        undoMap.insert(make_pair(dest, directory));
                     }
                     dest = "\"" + dest + "\"";
                     string syntax = "mv " + source + " " + dest;
@@ -294,15 +298,15 @@ void listDir(string directory, string uniqFileName)
                     string source = "\"" + img[index] + "\"";
                     int indexOfSlash = source.find_last_of("/");
                     string fileNm = source.substr(indexOfSlash);
-                    fileNm = fileNm.substr(0, fileNm.length() - 1);
+                    fileNm = fileNm.substr(0, fileNm.length()-1);
                     string dest
-                        = "\"" + directory + "/Documents/" + dirNameMapping[it.first] + fileNm + "\"";
+                        = "\"" + rootPath + "Documents/" + dirNameMapping[it.first] + fileNm + "\"";
                     string syntax = "mv " + source + " " + dest;
                     system(syntax.c_str());
                 }
             }
             if (mymap[it.first].size() > 0)
-                cout << "All the desktop miscellaneous files are in now " << dirNameMapping["other"]
+                cout << "All the miscellaneous files are in now " << dirNameMapping["other"]
                      << " folder\n";
         }
     }
@@ -313,6 +317,8 @@ void listDir(string directory, string uniqFileName)
             "\n";
     cout << "if you did not like arrangement you can undo it now, try it!!Press 'Y' or 'y'\n";
     cout << "+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++\n";
+
+    //cout<<"321 mapping :  "<<dirNameMapping["other"]<<"\n";
     char choice;
     cin >> choice;
     if (choice == 'Y' || choice == 'y')
@@ -320,6 +326,7 @@ void listDir(string directory, string uniqFileName)
         for(mit=undoMap.begin();mit!=undoMap.end();mit++)
         {
            string fPath = mit->first;
+           //cout<<fPath<<"  "<<mit->second<<"  path\n";
             if ((dp = opendir(fPath.c_str())) != NULL)
             {
                 // cout << "Error(" << errno << ") opening " << dir << endl;
@@ -351,7 +358,7 @@ void listDir(string directory, string uniqFileName)
             }
         }
         ////////////
-        string otherFolderName = directory+"/Documents/"+ dirNameMapping["other"];
+        string otherFolderName = rootPath+"Documents/"+ dirNameMapping["other"];
         if ((dp = opendir(otherFolderName.c_str())) != NULL)
         {
             while ((dirp = readdir(dp)) != NULL)
@@ -359,7 +366,7 @@ void listDir(string directory, string uniqFileName)
                 string name(dirp->d_name);
                 if (name != "." && name != "..")
                 {
-                    string test = dir + name + "\n";
+                    string test = dir + name;
                     if (dirp->d_type == DT_DIR)
                     {
                         /// ignored all the folder that are present in desktop as they may be
@@ -370,7 +377,7 @@ void listDir(string directory, string uniqFileName)
                     else
                     {
                         string source = "\"" + otherFolderName + "/" + name + "\"";
-                        string dest = "\"" + dir + "\"";
+                        string dest = "\"" + directory + "\"";
                         string syntax = "mv " + source + " " + dest;
                         system(syntax.c_str());
                     }
@@ -380,10 +387,6 @@ void listDir(string directory, string uniqFileName)
             system(syntax.c_str());
 
             cout<<"\n\n===============Undone Successfully===================\n\n";
-        }
-        else
-        {
-            cout << otherFolderName << " does not exist \n";
         }
 
         ////////////////
@@ -508,7 +511,7 @@ int main(int argc, char* argv[])
     char* user_name = getenv("USER");
     //********************************************//
 
-    string FolderPath = "/home/" + (string)user_name;
+    string FolderPath = "/home/" + (string)user_name+"/";
 
     if (os_name == "Linux")
     {
@@ -517,7 +520,7 @@ int main(int argc, char* argv[])
             char choice;
             cout << "*****========================================================================="
                     "======*****\n";
-            cout << "To clean your desktop,press 1.\nTo get top 10 files,press 2.\nTo see "
+            cout << "To clean any folder,press 1.\nTo get top 10 files,press 2.\nTo see "
                     "duplicates files in a particular folder,press 3.\nTo compress a File,press "
                     "4.\nTo terminate program,press 5.\n";
             /*++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
@@ -537,8 +540,13 @@ int main(int argc, char* argv[])
                 case '1':
                 {
             //*********************************If desktop cleaning you need*******************************//
-                    string dir = string(FolderPath);
-                    listDir(dir, uniqFileName);
+                    string fPath;
+
+                    cout<<"Give absolute file path :\n";
+                    cin.ignore();
+                    getline(cin,fPath);
+                    string dir = string(fPath);
+                    listDir(dir, FolderPath);
                     break;
                 }
                 case '2':
