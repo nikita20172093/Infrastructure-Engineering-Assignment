@@ -525,7 +525,7 @@ int main(int argc, char* argv[])
                     "4.\nTo terminate program,press 5.\n";
             /*++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
             +Make a choice-
-            +Press 1->if user wants to clean desktop.
+            +Press 1->if user wants to clean any folder.
             +Press 2->If user wants to get top 10 biggest files in the system.
             +Press 3->Providing folder name, user can get information of duplicate file.
             +Press 4->If user wants to compress any file, He/She just need to provide absolute path.
